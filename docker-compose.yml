@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recruflex
+    volumes:
+      - ./:/var/www/html
+      - ./vhost.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - dev
+
+  db:
+    image: mysql
+    container_name: mysql-db
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+    networks:
+      - dev
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 9000:80
+    environment:
+      PMA_HOST: db
+    networks:
+      - dev
+
+networks:
+  dev:
+
+volumes:
+  db_data:

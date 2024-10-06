@@ -1,0 +1,24 @@
+src/
+├── Domain/                 # Entités et logique métier
+│   ├── Entity/
+│   │   ├── Candidat.php
+│   └── Repository/         # Interfaces pour les repositories
+│       ├── CandidatRepositoryInterface.php
+├── Application/            # Cas d'utilisation
+│   ├── UseCase/
+│   │   ├── CreateCandidature.php
+│   └── DTO/                # Data Transfer Objects pour véhiculer les données
+│       └── CandidatureDTO.php
+├── Infrastructure/         # Implémentations concrètes
+│   ├── Repository/
+│   │   ├── CandidatRepository.php
+│   └── Persistence/        # Utilisation de Doctrine ORM
+│       ├── Doctrine/       # Ou un autre ORM si nécessaire
+│       └── MySQL/
+├── Interfaces/             # Interfaces avec le monde extérieur (API, Web)
+│   ├── Controller/
+│   │   ├── CandidatController.php
+│   │   ├── AdminController.php
+│   │   └── CandidatureController.php
+│   └── API/                # API REST
+│       └── CandidatureAPI.php
