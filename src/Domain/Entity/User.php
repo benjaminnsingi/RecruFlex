@@ -2,9 +2,10 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\Enum\UserRole;
 use Doctrine\ORM\Mapping as ORM;
+use Infrastructure\Persistence\Doctrine\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
-use UserRepository;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface
@@ -81,15 +82,27 @@ class User implements UserInterface
         return $this;
    }
 
+   /**
+    * Returns the user's roles as an array of character strings.
+    *
+    * Each role is extracted from the UserRole enumeration and converted to its corresponding string value.
+     * @return array|string[] An array of character strings representing the user's roles.
+   */
    public function getRoles(): array
    {
-       $roles = $this->roles;
-       $roles[] = 'ROLE_USER';
-       return array_unique($roles);
+       return array_map(fn($role) => $role->value, $this->roles);
    }
 
    public function setRoles(array $roles): self
    {
+       /**
+        * Validate that each role is an instance of UserRole
+       */
+       foreach ($roles as $role) {
+         if (!$role instanceof UserRole) {
+             throw new \InvalidArgumentException("Invalid role");
+         }
+       }
        $this->roles = $roles;
        return $this;
    }

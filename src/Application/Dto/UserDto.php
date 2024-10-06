@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Application\Dto;
 class UserDto
 {
    public int $id;
