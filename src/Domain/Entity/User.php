@@ -3,8 +3,8 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Enum\UserRole;
+use App\Infrastructure\Persistence\Doctrine\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Infrastructure\Persistence\Doctrine\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -96,19 +96,36 @@ class User implements UserInterface
    public function setRoles(array $roles): self
    {
        /**
+        * Convert and validate that each role is a valid instance of UserRole
+        */
+       $convertedRoles = [];
+       /**
         * Validate that each role is an instance of UserRole
        */
        foreach ($roles as $role) {
+
+         /**
+            * Si le rôle est une chaîne de caractères, on tente de le convertir en UserRole
+         */
+         if (is_string($role)) {
+            $role = UserRole::tryFrom($role);
+         }
+
+         /**
+            * Si la conversion échoue ou si ce n'est pas une instance valide, on lève une exception
+         */
          if (!$role instanceof UserRole) {
              throw new \InvalidArgumentException("Invalid role");
          }
+         $convertedRoles[] = $role;
        }
-       $this->roles = $roles;
+       $this->roles = $convertedRoles;
        return $this;
    }
 
-   public function eraseCredentials()
+   public function eraseCredentials(): void
    {
+
    }
 
    public function getUserIdentifier(): string

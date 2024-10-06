@@ -1,6 +1,6 @@
 <?php
 
-namespace UseCase;
+namespace App\Application\UseCase;
 
 use App\Application\Dto\UserDto;
 use App\Domain\Entity\User;
@@ -20,6 +20,7 @@ final class UserService
        $user->setFirstname($userDto->firstname);
        $user->setEmail($userDto->email);
        $user->setRoles($userDto->roles);
+       $user->setPassword(password_hash($userDto->password, PASSWORD_ARGON2I));
 
        $this->userRepository->save($user);
    }
